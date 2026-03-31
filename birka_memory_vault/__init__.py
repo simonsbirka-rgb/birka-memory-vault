@@ -1,0 +1,1 @@
+"""Birka Memory Vault: SQLAlchemy async layer over markdown."""
