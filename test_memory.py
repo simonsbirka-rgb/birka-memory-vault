@@ -1,9 +1,10 @@
+import datetime
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
 
 import asyncio
-from datetime import datetime
+
 from birka_memory_vault.database import engine, Base
 from birka_memory_vault.models import MemoryEntry
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -25,7 +26,7 @@ async def test_insert():
             tags=["birka", "infrastructure", "acp"],
             references=[],
             source_file="memory/2026-03-29.md",
-            created_at=datetime.utcnow()
+            created_at=datetime.datetime.now(datetime.timezone.utc)
         )
         session.add(entry)
         await session.commit()

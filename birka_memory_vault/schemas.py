@@ -45,3 +45,10 @@ class SnapshotIndexResponse(SnapshotIndexBase):
     timestamp: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+class SessionStartContext(BaseModel):
+    recent_memories: List[MemoryEntryResponse]
+    # For MVP, keeping it simple. Could add active_missions, unresolved_safeguards later.
+
+class MessageContext(BaseModel):
+    relevant_memories: List[MemoryEntryResponse]
