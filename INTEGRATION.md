@@ -71,3 +71,25 @@ Set `DATABASE_URL` in the environment to connect to PostgreSQL in production:
 export DATABASE_URL="postgresql+asyncpg://user:pass@localhost:5432/birka_memory"
 ```
 Without the variable, it defaults to a local `sqlite+aiosqlite:///./birka_memory.db` file.
+### 5. Using Hooks for Context Retrieval
+To provide dynamic context to Birka during operation, you can utilize memory retrieval hooks.
+
+**At Session Start:**
+```python
+from birka_memory_vault.hooks import MemoryRetrievalHooks
+
+async def on_session_start():
+    async with AsyncSessionLocal() as session:
+        hooks = MemoryRetrievalHooks(session)
+        context = await hooks.session_start_hook(limit=10)
+        # Use context.recent_memories to prime the agent
+```
+
+**Per Message:**
+```python
+async def on_message(content: str, tags: list[str]):
+    async with AsyncSessionLocal() as session:
+        hooks = MemoryRetrievalHooks(session)
+        context = await hooks.per_message_hook(tags=tags, limit=5)
+        # Inject context.relevant_memories into the prompt
+```
