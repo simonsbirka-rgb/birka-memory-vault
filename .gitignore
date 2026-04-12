@@ -3,3 +3,14 @@ __pycache__/
 *.pyc
 .ruff_cache/
 *.db-journal
+.env
+*.db
+*.sqlite
+*.db3
+memory_vault.db
+secrets/
+keys/
+credentials/
+*.key
+*.pem
+*.jsonl
