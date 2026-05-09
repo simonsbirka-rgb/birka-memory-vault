@@ -11,12 +11,13 @@ class MemoryEntryBase(BaseModel):
     source_file: str
 
 class MemoryEntryCreate(MemoryEntryBase):
-    pass
+    agent_id: Optional[str] = None
 
 class MemoryEntryResponse(MemoryEntryBase):
     id: int
     created_at: datetime
     compacted_into: Optional[int]
+    agent_id: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
 

@@ -113,6 +113,7 @@ class MemoryEntry(Base):
     compacted_into: Mapped[Optional[int]] = mapped_column(
         ForeignKey("memory_entry.id"), nullable=True
     )
+    agent_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, index=True)
 
 
 class CompactionIndex(Base):
