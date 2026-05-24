@@ -1,139 +1,144 @@
-# Engram
+# Engram: Structured Memory Index for AI Agents
 
-**Engram** is a structured, queryable memory index for AI agents. It builds on
-SQLAlchemy 2.0 async and Pydantic to give every agent session a durable,
-searchable record of its reasoning history — decisions, lessons learned,
-compaction outcomes, and snapshots.
+<p align="center">
+  <img src="https://img.shields.io/badge/SQLAlchemy-2.0-red?style=for-the-badge&logo=sqlalchemy" alt="SQLAlchemy 2.0" />
+  <img src="https://img.shields.io/badge/Pydantic-2.0-blue?style=for-the-badge&logo=pydantic" alt="Pydantic 2.0" />
+  <img src="https://img.shields.io/badge/FastAPI-Compatible-009688?style=for-the-badge&logo=fastapi" alt="FastAPI Compatible" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License" />
+</p>
+
+**Engram** is an enterprise-grade, asynchronous structured memory index and context-retrieval engine for autonomous AI agents and multi-agent systems. It builds on **SQLAlchemy 2.0 async** and **Pydantic v2** to provide agents with a queryable, durable record of their reasoning history—decisions, observations, lessons learned, and snapshots.
+
+Developed and maintained by [svprojects.lt](https://svprojects.lt).
+
+---
+
+## 🎯 Primary Use Case: Complex & Semantic AI Systems (Legal, Medical, Enterprise)
+
+In high-complexity domains like **Law**, **Compliance**, and **Enterprise Decision Management**, meaning and context must be strictly ordered, auditable, and easily accessible. 
+
+General LLM conversational histories quickly degrade or saturate the context window with conversational noise. **Engram** solves this by modeling memory as a structured, tag-filtered, compactable index.
+
+### Why Engram?
+- **⚖️ Legal & Medical Compliance**: Keep absolute, immutable, and auditable records of every agentic decision, tool execution, and milestone.
+- **🧠 Semantic Compaction**: Automatically compact historical, verbose execution steps into structured, high-level summaries without losing core context.
+- **⚡ SQL-Level JSON Filtering**: Retrieve context with micro-second latencies using Postgres/SQLite JSONB tag and reference arrays—bypassing expensive vector DB lookups for exact-match semantic groups.
+- **🕸️ Graph-Like Agent Fleets**: Track parent-child relationships, agent spawn states, commands, and safeguards within a structured transactional database.
+
+---
+
+## 🏗️ Architectural Flow
 
 ```
-                        ┌──────────┐
-                        │ markdown │  raw notes, .md files
-                        └────┬─────┘
-                             │ event emitter
-                             ▼
+                        ┌───────────┐
+                        │ Raw Notes │  Markdown files, raw LLM observations
+                        └─────┬─────┘
+                              │ Event-driven emitter
+                              ▼
                   ┌───────────────────────┐
-                  │   engram  (this lib)   │
-                  │ ─────────────────────  │
-                  │ Session | Hooks | ORM  │
-                  └─────────┬─────────────┘
-                            │ SQLAlchemy
-                            ▼
-                   ┌──────────────────┐
-                   │  SQLite /         │
-                   │  PostgreSQL        │
-                   └──────────────────┘
+                  │        Engram         │
+                  │ ───────────────────── │
+                  │ Session | Hooks | ORM │
+                  └───────────┬───────────┘
+                              │ SQLAlchemy 2.0 (Async)
+                              ▼
+                   ┌─────────────────────┐
+                   │  SQLite/PostgresDB  │  Structured tables + JSONB indexing
+                   └─────────────────────┘
 ```
 
-## Layers
+---
+
+## 📦 Features & Layers
 
 | Layer | Module | Responsibility |
 |---|---|---|
-| Schema | `engram.schemas` | Pydantic DTOs for all inbound/outbound data |
-| ORM | `engram.models` | SQLAlchemy 2.0 declarative models + enums |
-| Events | `engram.events` | `MemoryEventManager` — create entries, compact, snapshot |
-| Hooks | `engram.hooks` | `MemoryRetrievalHooks` — session-start and per-message context |
-| DB | `engram.database` | Eager singletons: `engine`, `AsyncSessionLocal` |
+| **Schema** | `engram.schemas` | Highly validated Pydantic DTOs for type-safe data validation. |
+| **ORM** | `engram.models` | SQLAlchemy 2.0 async declarative models, enums, and indexes. |
+| **Events** | `engram.events` | `MemoryEventManager` — creation, snapshotting, and transaction compaction. |
+| **Hooks** | `engram.hooks` | `MemoryRetrievalHooks` — session-start and per-message context generation. |
+| **Database** | `engram.database` | Database singletons for `engine` and `AsyncSessionLocal` setups. |
 
-## Quick-start
+---
 
+## ⚡ Quickstart
+
+### 1. Installation
+
+Ensure you have your environment ready:
+```bash
+pip install engram-layer
+```
+*(Dependencies: `sqlalchemy>=2.0.0`, `pydantic>=2.0.0`, `alembic>=1.12.0`)*
+
+### 2. Tables & Session Setup
 ```python
-# 1. Engine / session — the consuming app owns session lifecycle
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
-from engram import engine, AsyncSessionLocal  # optional convenience re-exports
+from engram import engine, Base
 
-# Tables are created idempotently on first use
+# Create tables idempotently on startup
 async with engine.begin() as conn:
     await conn.run_sync(Base.metadata.create_all)
+```
 
-# 2. Write a memory entry
+### 3. Write a Memory Entry (Events)
+Log critical decisions and audit milestones during runtime:
+```python
 from engram.events import MemoryEventManager
 from engram.schemas import MemoryEntryCreate
+from engram import AsyncSessionLocal
 
 async with AsyncSessionLocal() as session:
     mgr = MemoryEventManager(session)
     entry = await mgr.add_memory_entry(
         MemoryEntryCreate(
             type="decision",
-            title="Use PostgreSQL for vector search",
-            content="Neon Postgres gives pgvector out of the box.",
-            tags=["decision", "infrastructure", "db"],
-            references=[],
+            title="Use PostgreSQL for semantic search",
+            content="PGVector allows unified SQL querying with relational assets.",
+            tags=["infrastructure", "legal-ai", "postgres"],
+            references=["LITEKO-decision-2026"],
             source_file="memory/2026-05-24.md",
         )
     )
+```
 
-# 3. Retrieve context
+### 4. Retrieve Context (Hooks)
+Inject memories back into the agent's system prompt during a new session, or dynamically filter on incoming user queries:
+```python
 from engram.hooks import MemoryRetrievalHooks
+from engram import AsyncSessionLocal
 
 async with AsyncSessionLocal() as session:
     hooks = MemoryRetrievalHooks(session)
 
-    # 3a — at session start
-    ctx = await hooks.session_start_hook(limit=10)
+    # A. Session-start hook: grab the 10 most recent memories to re-orient the agent
+    start_ctx = await hooks.session_start_hook(limit=10)
 
-    # 3b — per user message (SQL-level JSON tag filtering)
-    ctx = await hooks.per_message_hook(tags=["infrastructure"], limit=5)
+    # B. Per-message hook: inject context dynamically matching incoming queries or tags
+    msg_ctx = await hooks.per_message_hook(tags=["infrastructure"], limit=5)
+```
 
-# 4. Compact old entries into one summary
+### 5. Memory Compaction
+Consolidate thousands of operational step logs into a single high-level summary to prevent context window bloat:
+```python
 async with AsyncSessionLocal() as session:
     mgr = MemoryEventManager(session)
     compaction = await mgr.compact_entries(
         merged_entry=MemoryEntryCreate(
             type="summary",
-            title="May 2026 decisions",
-            content="…",
-            tags=["summary"],
+            title="Compacted May 2026 Infrastructure Decisions",
+            content="We officially migrated and tested our pgvector configuration...",
+            tags=["summary", "infrastructure"],
             references=[],
             source_file="memory/2026-05-24.md",
         ),
-        old_entry_ids=[1, 2, 3],
-    )
-
-# 5. Snapshot the registry
-async with AsyncSessionLocal() as session:
-    mgr = MemoryEventManager(session)
-    snap = await mgr.create_snapshot(
-        SnapshotIndexCreate(
-            entry_ids=[1, 2, 3],
-            memory_md_hash="sha256-hash-of-memory-md",
-        )
+        old_entry_ids=[1, 2, 3],  # IDs of the detailed step entries
     )
 ```
 
-## Database backends
+---
 
-| Layer | Dev | Prod |
-|---|---|---|
-| Engine | SQLite (`aiosqlite`) | PostgreSQL (`asyncpg`) |
-| Configure | default (no env needed) | `DATABASE_URL=postgresql+asyncpg://…` |
+## 🛡️ License
 
-## Installation
+Engram is licensed under the [MIT License](LICENSE).
 
-```bash
-pip install .[dev]   # library + pytest-asyncio + ruff + black
-```
-
-## Requirements
-
-- Python ≥ 3.11
-- SQLAlchemy ≥ 2.0
-- Pydantic ≥ 2.0
-
-## Architecture
-
-```
-markdown files  ──emit──►  event handlers  ──ORM──►  database
-                     │
-                     ▼
-              MemoryEntry  ── tagged JSON
-              CompactionIndex  ── merge trace
-              SnapshotIndex  ── restore points
-```
-
-The consuming application is responsible for:
-- Creating the engine and session.
-- Calling `Base.metadata.create_all` at startup.
-- Committing transactions to match its own consistency requirements.
-
-Engram does **not** call `get_db()` or `init_db()` internally — those
-concerns live in the application layer, not the library.
+Developed with precision by [svprojects.lt](https://svprojects.lt). For partnership inquiries or semantic system design services, reach out to our core team.

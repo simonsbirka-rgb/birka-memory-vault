@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Engram — Structured Queryable Memory Index for AI Agents</title>
+  
+  <!-- CDN Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --color-bg: #08090a;
+      --color-panel: #0f1011;
+      --color-surface: #191a1b;
+      --color-text-primary: #f7f8f8;
+      --color-text-secondary: #d0d6e0;
+      --color-text-muted: #8a8f98;
+      --color-accent: #5e6ad2;
+      --color-accent-glowing: #7170ff;
+      --color-accent-hover: #828fff;
+      --color-border-subtle: rgba(255, 255, 255, 0.06);
+      --color-border-standard: rgba(255, 255, 255, 0.09);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      color: var(--color-text-secondary);
+      background-color: var(--color-bg);
+      line-height: 1.5;
+      overflow-x: hidden;
+      font-feature-settings: "cv01", "ss03";
+    }
+
+    /* Typography Utilities */
+    h1, h2, h3, h4 {
+      color: var(--color-text-primary);
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+
+    a {
+      color: var(--color-accent-glowing);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    a:hover {
+      color: var(--color-accent-hover);
+    }
+
+    /* Header & Navigation */
+    header {
+      position: sticky;
+      top: 0;
+      background: rgba(8, 9, 10, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--color-border-subtle);
+      z-index: 100;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .logo-icon {
+      width: 24px;
+      height: 24px;
+      background: var(--color-accent);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 15px var(--color-accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .nav-link {
+      color: var(--color-text-muted);
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover {
+      color: var(--color-text-primary);
+    }
+
+    .cta-button {
+      background: var(--color-accent);
+      color: #ffffff;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(94, 106, 210, 0.2);
+    }
+
+    .cta-button:hover {
+      background: var(--color-accent-hover);
+      box-shadow: 0 4px 20px rgba(113, 112, 255, 0.4);
+    }
+
+    /* Hero Section */
+    .hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 120px 24px 80px 24px;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(94, 106, 210, 0.15) 0%, rgba(8, 9, 10, 0) 70%);
+      filter: blur(50px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--color-border-subtle);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      margin-bottom: 24px;
+    }
+
+    .hero-badge strong {
+      color: var(--color-accent-glowing);
+    }
+
+    .hero h1 {
+      font-size: 64px;
+      line-height: 1.1;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+      background: linear-gradient(180deg, #ffffff 0%, #a2a8b0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtext {
+      font-size: 20px;
+      color: var(--color-text-muted);
+      max-width: 760px;
+      margin: 0 auto 40px auto;
+      line-height: 1.5;
+    }
+
+    /* Features / Use Cases Grid */
+    .features-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-header h2 {
+      font-size: 36px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .section-header p {
+      font-size: 18px;
+      color: var(--color-text-muted);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 60px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: 12px;
+      padding: 32px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: var(--color-border-standard);
+      transform: translateY(-2px);
+    }
+
+    .card-icon {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    .card h3 {
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+
+    .card p {
+      font-size: 15px;
+      color: var(--color-text-muted);
+      line-height: 1.6;
+    }
+
+    /* Code Highlight / Tabs Container */
+    .demo-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
+
+    .code-container {
+      background: var(--color-panel);
+      border: 1px solid var(--color-border-standard);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .code-header {
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--color-border-subtle);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .code-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .code-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .code-dot:nth-child(1) { background: #ff5f56; }
+    .code-dot:nth-child(2) { background: #ffbd2e; }
+    .code-dot:nth-child(3) { background: #27c93f; }
+
+    .code-lang {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--color-text-muted);
+    }
+
+    .code-body {
+      padding: 24px;
+      overflow-x: auto;
+    }
+
+    pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      color: #e2e4e7;
+      text-align: left;
+    }
+
+    /* Footer & Branding */
+    footer {
+      border-top: 1px solid var(--color-border-subtle);
+      background: #020203;
+      padding: 60px 24px;
+      margin-top: 100px;
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .footer-left {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .footer-brand {
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .footer-credits {
+      font-size: 13px;
+      color: var(--color-text-muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 40px;
+      }
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+      .footer-container {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header>
+    <div class="nav-container">
+      <div class="logo-group">
+        <div class="logo-icon">E</div>
+        <span>Engram</span>
+      </div>
+      <nav class="nav-links">
+        <a href="https://github.com/simonsbirka-rgb/engram-layer" class="nav-link" target="_blank">GitHub</a>
+        <a href="https://svprojects.lt" class="nav-link" target="_blank">SVprojects</a>
+        <a href="https://github.com/simonsbirka-rgb/engram-layer" class="cta-button" target="_blank">Download Layer</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-badge">
+      <span>Supported by <strong>svprojects.lt</strong></span>
+    </div>
+    <h1>Durable & Queryable Memory Index for AI Agents</h1>
+    <p class="hero-subtext">
+      Engram provides high-complexity multi-agentic and semantic AI systems with a structured, transaction-compacted reasoning ledger using SQLAlchemy 2.0. Perfect for compliance-heavy domains like Law and Enterprise Automation.
+    </p>
+    <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+      <a href="https://github.com/simonsbirka-rgb/engram-layer" class="cta-button" target="_blank">View Repository</a>
+      <a href="#quickstart" class="cta-button" style="background: rgba(255,255,255,0.03); border: 1px solid var(--color-border-subtle); color: var(--color-text-primary);" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">Read Documentation</a>
+    </div>
+  </section>
+
+  <!-- Use Cases / Features -->
+  <section class="features-section">
+    <div class="section-header">
+      <h2>Engineered for Semantic Systems</h2>
+      <p>Bypass bloated context windows and high latency vector databases with direct transactional SQL-based memory state indexing.</p>
+    </div>
+    
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-icon">⚖️</div>
+        <h3>Legal & MedTech Auditing</h3>
+        <p>Keep flawless, type-safe, and verifiable execution trails of every decision, prompt snapshot, and tool output generated by autonomous agents.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🧠</div>
+        <h3>Memory Compaction</h3>
+        <p>Prevent agent context saturation. Engram lets you merge thousands of raw observation steps into consolidated high-level semantic summaries.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <h3>Microsecond Retrieval</h3>
+        <p>Query exact-match tags, semantic groupings, and trace documents via native JSONB/JSON arrays in SQLite or PostgreSQL without costly embedding lookups.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Code / Quickstart -->
+  <section class="demo-section" id="quickstart">
+    <div class="section-header">
+      <h2>Integrated in Minutes</h2>
+      <p>Pure Python, built on Pydantic v2 validation and SQLAlchemy 2.0 async transaction management.</p>
+    </div>
+
+    <div class="code-container">
+      <div class="code-header">
+        <div class="code-dots">
+          <div class="code-dot"></div>
+          <div class="code-dot"></div>
+          <div class="code-dot"></div>
+        </div>
+        <div class="code-lang">quickstart.py</div>
+      </div>
+      <div class="code-body">
+        <pre><code><span style="color: #ff79c6;">from</span> engram.events <span style="color: #ff79c6;">import</span> MemoryEventManager
+<span style="color: #ff79c6;">from</span> engram.schemas <span style="color: #ff79c6;">import</span> MemoryEntryCreate
+<span style="color: #ff79c6;">from</span> engram <span style="color: #ff79c6;">import</span> AsyncSessionLocal
+
+<span style="color: #6272a4;"># Write a structured decision into the durable memory ledger</span>
+<span style="color: #ff79c6;">async with</span> AsyncSessionLocal() <span style="color: #ff79c6;">as</span> session:
+    mgr = MemoryEventManager(session)
+    entry = <span style="color: #ff79c6;">await</span> mgr.add_memory_entry(
+        MemoryEntryCreate(
+            type=<span style="color: #f1fa8c;">"decision"</span>,
+            title=<span style="color: #f1fa8c;">"Use SQLAlchemy Async"</span>,
+            content=<span style="color: #f1fa8c;">"Enables parallel database transactional writes on the AWS ops instance."</span>,
+            tags=[<span style="color: #f1fa8c;">"infrastructure"</span>, <span style="color: #f1fa8c;">"orm"</span>, <span style="color: #f1fa8c;">"db"</span>],
+            references=[<span style="color: #f1fa8c;">"task-245-caddy"</span>],
+            source_file=<span style="color: #f1fa8c;">"ops/caddy/config.py"</span>,
+        )
+    )
+
+<span style="color: #6272a4;"># Query memories dynamically inside retrieval hooks</span>
+<span style="color: #ff79c6;">from</span> engram.hooks <span style="color: #ff79c6;">import</span> MemoryRetrievalHooks
+
+<span style="color: #ff79c6;">async with</span> AsyncSessionLocal() <span style="color: #ff79c6;">as</span> session:
+    hooks = MemoryRetrievalHooks(session)
+    
+    <span style="color: #6272a4;"># Inject on session-start</span>
+    ctx = <span style="color: #ff79c6;">await</span> hooks.session_start_hook(limit=<span style="color: #bd93f9;">10</span>)
+    
+    <span style="color: #6272a4;"># Inline semantic tag matching on incoming user messages</span>
+    message_ctx = <span style="color: #ff79c6;">await</span> hooks.per_message_hook(tags=[<span style="color: #f1fa8c;">"infrastructure"</span>], limit=<span style="color: #bd93f9;">5</span>)</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-left">
+        <div class="footer-brand">Engram</div>
+        <div class="footer-credits">
+          Open-source library licensed under the MIT License.
+        </div>
+        <div class="footer-credits" style="color: var(--color-text-muted);">
+          Brought to you by <a href="https://svprojects.lt" target="_blank" style="color: var(--color-text-muted); text-decoration: underline;">svprojects.lt</a> — building premium agentic systems.
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/simonsbirka-rgb/engram-layer" target="_blank">GitHub</a>
+        <a href="https://svprojects.lt" target="_blank">Contact Us</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
