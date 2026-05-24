@@ -9,3 +9,11 @@ engram_dev.db
 *.db
 *.sqlite
 *.db3
+
+# Local planning and draft files
+docs/plans/
+docs/architecture-mcp-seeding.md
+docs/agentic-layer/
+docs/marketing/
+strategy-v1.md
+
