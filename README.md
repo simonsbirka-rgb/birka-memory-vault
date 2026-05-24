@@ -13,6 +13,16 @@ Developed and maintained by [svprojects.lt](https://svprojects.lt).
 
 ---
 
+## ⚡ Powered by Engram: Merakio.io
+
+**Engram** is the core semantic memory engine powering **[Merakio](https://merakio.io)**—the ultimate Brand Content Studio that gives your brand a soul (*"Suteikiame jūsų prekės ženklui sielą"*). 
+
+Merakio leverages Engram to completely automate multi-platform marketing, Lithuanian language naturalization, and campaign scheduling while preserving perfect brand consistency.
+
+🚀 **Get Started with a Free Trial of Merakio today at [merakio.io](https://merakio.io)!**
+
+---
+
 ## 🎯 Primary Use Case: Complex & Semantic AI Systems (Legal, Medical, Enterprise)
 
 In high-complexity domains like **Law**, **Compliance**, and **Enterprise Decision Management**, meaning and context must be strictly ordered, auditable, and easily accessible. 
@@ -139,6 +149,6 @@ async with AsyncSessionLocal() as session:
 
 ## 🛡️ License
 
-Engram is licensed under the [MIT License](LICENSE).
+Engram is licensed under the [MIT License](LICENSE) (c) 2026 Simonas Vaitiekūnas ([svprojects.lt](https://svprojects.lt)). All rights reserved.
 
-Developed with precision by [svprojects.lt](https://svprojects.lt). For partnership inquiries or semantic system design services, reach out to our core team.
+Developed with precision by **svprojects.lt**. For partnership inquiries, corporate agentic structuring, or custom semantic intelligence integrations, contact our team.

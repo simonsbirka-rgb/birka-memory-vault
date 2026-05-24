@@ -134,7 +134,7 @@
     .hero {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 120px 24px 80px 24px;
+      padding: 120px 24px 60px 24px;
       text-align: center;
       position: relative;
     }
@@ -190,11 +190,59 @@
       line-height: 1.5;
     }
 
+    /* Merakio Promotion Banner */
+    .promo-banner {
+      max-width: 800px;
+      margin: 0 auto 60px auto;
+      background: linear-gradient(135deg, rgba(196, 101, 58, 0.1) 0%, rgba(94, 106, 210, 0.05) 100%);
+      border: 1px solid rgba(196, 101, 58, 0.2);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      box-shadow: 0 8px 32px rgba(196, 101, 58, 0.05);
+    }
+
+    .promo-content h4 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #ff915b;
+      margin-bottom: 4px;
+    }
+
+    .promo-content p {
+      font-size: 14px;
+      color: var(--color-text-secondary);
+      line-height: 1.4;
+    }
+
+    .promo-cta {
+      background: #C4653A;
+      color: #ffffff !important;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 4px 15px rgba(196, 101, 58, 0.3);
+    }
+
+    .promo-cta:hover {
+      background: #d8764a;
+      box-shadow: 0 4px 22px rgba(196, 101, 58, 0.5);
+      transform: translateY(-1px);
+    }
+
     /* Features / Use Cases Grid */
     .features-section {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 80px 24px;
+      padding: 60px 24px;
     }
 
     .section-header {
@@ -258,7 +306,7 @@
     .demo-section {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 80px 24px;
+      padding: 60px 24px;
     }
 
     .code-container {
@@ -362,6 +410,11 @@
       .hero h1 {
         font-size: 40px;
       }
+      .promo-banner {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+      }
       .grid-3 {
         grid-template-columns: 1fr;
       }
@@ -383,9 +436,9 @@
         <span>Engram</span>
       </div>
       <nav class="nav-links">
-        <a href="https://github.com/simonsbirka-rgb/engram-layer" class="nav-link" target="_blank">GitHub</a>
+        <a href="https://github.com/simonsbirka-rgb/engram-semantic-layer" class="nav-link" target="_blank">GitHub</a>
         <a href="https://svprojects.lt" class="nav-link" target="_blank">SVprojects</a>
-        <a href="https://github.com/simonsbirka-rgb/engram-layer" class="cta-button" target="_blank">Download Layer</a>
+        <a href="https://github.com/simonsbirka-rgb/engram-semantic-layer" class="cta-button" target="_blank">Download Layer</a>
       </nav>
     </div>
   </header>
@@ -399,8 +452,18 @@
     <p class="hero-subtext">
       Engram provides high-complexity multi-agentic and semantic AI systems with a structured, transaction-compacted reasoning ledger using SQLAlchemy 2.0. Perfect for compliance-heavy domains like Law and Enterprise Automation.
     </p>
+    
+    <!-- Merakio Call-To-Action Banner -->
+    <div class="promo-banner">
+      <div class="promo-content">
+        <h4>⚡ Core Memory of Merakio.io</h4>
+        <p>Engram is the active semantic engine driving <strong>Merakio</strong>—the premier Brand Content Studio automating multi-channel marketing campaigns and native Lithuanian language editing.</p>
+      </div>
+      <a href="https://merakio.io" target="_blank" class="promo-cta">Try Merakio Free →</a>
+    </div>
+
     <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
-      <a href="https://github.com/simonsbirka-rgb/engram-layer" class="cta-button" target="_blank">View Repository</a>
+      <a href="https://github.com/simonsbirka-rgb/engram-semantic-layer" class="cta-button" target="_blank">View Repository</a>
       <a href="#quickstart" class="cta-button" style="background: rgba(255,255,255,0.03); border: 1px solid var(--color-border-subtle); color: var(--color-text-primary);" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">Read Documentation</a>
     </div>
   </section>
@@ -485,16 +548,16 @@
   <footer>
     <div class="footer-container">
       <div class="footer-left">
-        <div class="footer-brand">Engram</div>
+        <div class="footer-brand">Engram Semantic Layer</div>
         <div class="footer-credits">
-          Open-source library licensed under the MIT License.
+          Open-source library licensed under the MIT License. Copyright &copy; 2026 Simonas Vaitiekūnas (svprojects.lt). All rights reserved.
         </div>
         <div class="footer-credits" style="color: var(--color-text-muted);">
           Brought to you by <a href="https://svprojects.lt" target="_blank" style="color: var(--color-text-muted); text-decoration: underline;">svprojects.lt</a> — building premium agentic systems.
         </div>
       </div>
       <div class="footer-links">
-        <a href="https://github.com/simonsbirka-rgb/engram-layer" target="_blank">GitHub</a>
+        <a href="https://github.com/simonsbirka-rgb/engram-semantic-layer" target="_blank">GitHub</a>
         <a href="https://svprojects.lt" target="_blank">Contact Us</a>
       </div>
     </div>
