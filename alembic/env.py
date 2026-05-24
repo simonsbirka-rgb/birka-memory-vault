@@ -1,4 +1,5 @@
 import asyncio
+import os
 from logging.config import fileConfig
 
 from sqlalchemy import pool
@@ -12,16 +13,19 @@ from alembic import context
 config = context.config
 
 # Interpret the config file for Python logging.
-# This line sets up loggers basically.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
+
+# Override sqlalchemy.url from DATABASE_URL if the env var is set.
+_env_url = os.environ.get("DATABASE_URL")
+if _env_url:
+    config.set_main_option("sqlalchemy.url", _env_url)
 
 # add your model's MetaData object here
 # for 'autogenerate' support
 import sys
-import os
 sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
-from birka_memory_vault.models import Base
+from engram.models import Base
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,

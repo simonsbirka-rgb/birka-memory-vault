@@ -1,13 +1,14 @@
-from pydantic import BaseModel, ConfigDict
 from datetime import datetime
-from typing import List, Optional
+
+from pydantic import BaseModel, ConfigDict
+
 
 class MemoryEntryBase(BaseModel):
     type: str
     title: str
     content: str
-    tags: List[str] = []
-    references: List[str] = []
+    tags: list[str] = []
+    references: list[str] = []
     source_file: str
 
 class MemoryEntryCreate(MemoryEntryBase):
@@ -16,13 +17,13 @@ class MemoryEntryCreate(MemoryEntryBase):
 class MemoryEntryResponse(MemoryEntryBase):
     id: int
     created_at: datetime
-    compacted_into: Optional[int]
+    compacted_into: int | None
 
     model_config = ConfigDict(from_attributes=True)
 
 class CompactionIndexBase(BaseModel):
     entry_id: int
-    merged_ids: List[int]
+    merged_ids: list[int]
 
 class CompactionIndexCreate(CompactionIndexBase):
     pass
@@ -34,7 +35,7 @@ class CompactionIndexResponse(CompactionIndexBase):
     model_config = ConfigDict(from_attributes=True)
 
 class SnapshotIndexBase(BaseModel):
-    entry_ids: List[int]
+    entry_ids: list[int]
     memory_md_hash: str
 
 class SnapshotIndexCreate(SnapshotIndexBase):
@@ -47,8 +48,8 @@ class SnapshotIndexResponse(SnapshotIndexBase):
     model_config = ConfigDict(from_attributes=True)
 
 class SessionStartContext(BaseModel):
-    recent_memories: List[MemoryEntryResponse]
-    # For MVP, keeping it simple. Could add active_missions, unresolved_safeguards later.
+    recent_memories: list[MemoryEntryResponse]
+    # MVP: only holds recent memories (could add missions later).
 
 class MessageContext(BaseModel):
-    relevant_memories: List[MemoryEntryResponse]
+    relevant_memories: list[MemoryEntryResponse]
